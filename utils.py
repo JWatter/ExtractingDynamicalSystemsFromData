@@ -6,9 +6,8 @@ class LinearApprox:
         self.bias = None
     
     def linear_approx(self, x, y):
-        A = np.vstack([x, np.ones(len(x))]).T
-        self.fit(A, y)
-        return self.predict(A)
+        self.fit(x, y)
+        return self.predict(x)
         
     def fit(self, x, y):
         self.coe = np.linalg.lstsq(x, y)[0]
@@ -32,12 +31,10 @@ class NonlinearApprox:
         self.radial = None
     
     def radial_approx(self, x, y):
-        A = np.vstack([x, np.ones(len(x))]).T
-        self.fit(A, y)
-        return self.predict(A)
+        self.fit(x, y)
+        return self.predict(x)
         
     def fit(self, x, y):
-        
         idx = np.random.choice(x.shape[0], size=self.L, replace=False)
         self.center = x[idx].copy()
         radial = np.empty((x.shape[0], self.L))
