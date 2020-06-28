@@ -28,6 +28,7 @@ class NonlinearApprox:
         self.center = None
         self.coe = None
         self.bias = None
+        self.radial = None
     
     def radial_approx(self, x, y):
         self.fit(x, y)
@@ -40,15 +41,12 @@ class NonlinearApprox:
         for l in range(self.L):
             norm = np.linalg.norm(x - self.center[l, :], axis=1)
             radial[:, l] = np.exp(-norm**2 / self.epsilon**2)
-        self.coe = np.linalg.lstsq(radial, y)[0]
-        self.bias = np.linalg.lstsq(radial, y)[1]
+        self.radial = radial
+        self.coe = np.linalg.lstsq(self.radial, y)[0]
+        self.bias = np.linalg.lstsq(self.radial, y)[1]
 
     def predict(self, x):
-        radial = np.empty((x.shape[0], self.L))
-        for l in range(self.L):
-            norm = np.linalg.norm(x - self.center[l, :], axis=1)
-            radial[:, l] = np.exp(-norm**2 / self.epsilon**2)
-        return radial @ self.coe
+        return self.radial @ self.coe
     
     def get_coe(self):
         a = self.coe
